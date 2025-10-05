@@ -63,7 +63,9 @@ export default function CouponsPage() {
       try {
         setLoading(true);
         const response = await fetch(
-          `/api/coupons?page=${currentPage}&search=${searchTerm}&isActive=${statusFilter === "all" ? "" : statusFilter}`
+          `/api/coupons?page=${currentPage}&search=${searchTerm}&isActive=${
+            statusFilter === "all" ? "" : statusFilter
+          }`
         );
         const data = await response.json();
         setCoupons(data.coupons);
@@ -90,7 +92,9 @@ export default function CouponsPage() {
         description: couponDescription,
         discountType,
         discountValue: parseFloat(discountValue),
-        minimumOrderValue: minimumOrderValue ? parseFloat(minimumOrderValue) : null,
+        minimumOrderValue: minimumOrderValue
+          ? parseFloat(minimumOrderValue)
+          : null,
         usageLimit: usageLimit ? parseInt(usageLimit) : null,
         startDate: couponStartDate,
         endDate: couponEndDate,
@@ -112,7 +116,9 @@ export default function CouponsPage() {
           const updatedCoupon = await response.json();
           setCoupons(
             coupons.map((c) =>
-              c.id === updatedCoupon.id ? { ...updatedCoupon, _count: c._count } : c
+              c.id === updatedCoupon.id
+                ? { ...updatedCoupon, _count: c._count }
+                : c
             )
           );
         } else {
@@ -132,7 +138,10 @@ export default function CouponsPage() {
 
         if (response.ok) {
           const newCoupon = await response.json();
-          setCoupons([...coupons, { ...newCoupon, _count: { couponUsages: 0 } }]);
+          setCoupons([
+            ...coupons,
+            { ...newCoupon, _count: { couponUsages: 0 } },
+          ]);
         } else {
           const errorData = await response.json();
           setError(errorData.error || "Failed to create coupon");
@@ -215,7 +224,9 @@ export default function CouponsPage() {
         const updatedCoupon = await response.json();
         setCoupons(
           coupons.map((c) =>
-            c.id === updatedCoupon.id ? { ...updatedCoupon, _count: c._count } : c
+            c.id === updatedCoupon.id
+              ? { ...updatedCoupon, _count: c._count }
+              : c
           )
         );
       } else {
@@ -394,7 +405,9 @@ export default function CouponsPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{coupon.name}</div>
+                          <div className="text-sm text-gray-900">
+                            {coupon.name}
+                          </div>
                           {coupon.description && (
                             <div className="text-sm text-gray-500">
                               {coupon.description}
@@ -418,7 +431,8 @@ export default function CouponsPage() {
                           {coupon.usageLimit && ` / ${coupon.usageLimit}`}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {formatDate(coupon.startDate)} - {formatDate(coupon.endDate)}
+                          {formatDate(coupon.startDate)} -{" "}
+                          {formatDate(coupon.endDate)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span
@@ -432,7 +446,9 @@ export default function CouponsPage() {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {coupon.campaign ? coupon.campaign.name : "No Campaign"}
+                          {coupon.campaign
+                            ? coupon.campaign.name
+                            : "No Campaign"}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <button
@@ -442,7 +458,9 @@ export default function CouponsPage() {
                             <PencilIcon className="h-5 w-5" />
                           </button>
                           <button
-                            onClick={() => handleToggleActive(coupon.id, coupon.isActive)}
+                            onClick={() =>
+                              handleToggleActive(coupon.id, coupon.isActive)
+                            }
                             className={`mr-3 ${
                               coupon.isActive
                                 ? "text-red-600 hover:text-red-900"
@@ -474,9 +492,7 @@ export default function CouponsPage() {
               <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                 <div className="flex-1 flex justify-between sm:hidden">
                   <button
-                    onClick={() =>
-                      setCurrentPage(Math.max(1, currentPage - 1))
-                    }
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
                     className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                   >
@@ -547,11 +563,11 @@ export default function CouponsPage() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 modal-backdrop flex items-center justify-center p-4 z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md"
+            className="modal-container slide-in p-6 w-full max-w-md"
           >
             <h2 className="text-xl font-bold text-gray-900 mb-4">
               {editingCoupon ? "Edit Coupon" : "Add New Coupon"}

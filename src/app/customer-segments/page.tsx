@@ -28,7 +28,9 @@ export default function CustomerSegmentsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [showModal, setShowModal] = useState(false);
-  const [editingSegment, setEditingSegment] = useState<CustomerSegment | null>(null);
+  const [editingSegment, setEditingSegment] = useState<CustomerSegment | null>(
+    null
+  );
   const [segmentName, setSegmentName] = useState("");
   const [segmentCriteria, setSegmentCriteria] = useState("");
   const [error, setError] = useState("");
@@ -67,19 +69,24 @@ export default function CustomerSegmentsPage() {
 
       if (editingSegment) {
         // Update existing segment
-        const response = await fetch(`/api/customer-segments/${editingSegment.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(segmentData),
-        });
+        const response = await fetch(
+          `/api/customer-segments/${editingSegment.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(segmentData),
+          }
+        );
 
         if (response.ok) {
           const updatedSegment = await response.json();
           setSegments(
             segments.map((s) =>
-              s.id === updatedSegment.id ? { ...updatedSegment, _count: s._count } : s
+              s.id === updatedSegment.id
+                ? { ...updatedSegment, _count: s._count }
+                : s
             )
           );
         } else {
@@ -99,7 +106,10 @@ export default function CustomerSegmentsPage() {
 
         if (response.ok) {
           const newSegment = await response.json();
-          setSegments([...segments, { ...newSegment, _count: { customerSegmentMembers: 0 } }]);
+          setSegments([
+            ...segments,
+            { ...newSegment, _count: { customerSegmentMembers: 0 } },
+          ]);
         } else {
           const errorData = await response.json();
           setError(errorData.error || "Failed to create segment");
@@ -128,7 +138,8 @@ export default function CustomerSegmentsPage() {
 
   // Handle delete segment
   const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this customer segment?")) return;
+    if (!confirm("Are you sure you want to delete this customer segment?"))
+      return;
 
     try {
       const response = await fetch(`/api/customer-segments/${id}`, {
@@ -160,7 +171,9 @@ export default function CustomerSegmentsPage() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Customer Segments</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Customer Segments
+          </h1>
           <p className="text-gray-500 mt-1">
             Manage customer segments and targeting criteria
           </p>
@@ -273,7 +286,7 @@ export default function CustomerSegmentsPage() {
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <button
                             onClick={() =>
-                              window.location.href = `/customer-segments/${segment.id}`
+                              (window.location.href = `/customer-segments/${segment.id}`)
                             }
                             className="text-green-600 hover:text-green-900 mr-3"
                           >
@@ -304,9 +317,7 @@ export default function CustomerSegmentsPage() {
               <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                 <div className="flex-1 flex justify-between sm:hidden">
                   <button
-                    onClick={() =>
-                      setCurrentPage(Math.max(1, currentPage - 1))
-                    }
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
                     className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                   >
@@ -377,14 +388,16 @@ export default function CustomerSegmentsPage() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 modal-backdrop flex items-center justify-center p-4 z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md"
+            className="modal-container slide-in p-6 w-full max-w-md"
           >
             <h2 className="text-xl font-bold text-gray-900 mb-4">
-              {editingSegment ? "Edit Customer Segment" : "Add New Customer Segment"}
+              {editingSegment
+                ? "Edit Customer Segment"
+                : "Add New Customer Segment"}
             </h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">

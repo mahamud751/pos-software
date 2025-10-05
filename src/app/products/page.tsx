@@ -14,16 +14,32 @@ import {
 interface Product {
   id: number;
   name: string;
-  category: { name: string };
-  brand: { name: string };
+  category: { name: string; id: number };
+  brand: { name: string; id: number };
   sellingPrice: number;
   costPrice: number;
   stock: number;
   minStock: number;
   sku: string;
   barcode: string;
-  unit: { symbol: string };
+  unit: { symbol: string; id: number };
   expiryDate?: string;
+}
+
+interface Category {
+  id: number;
+  name: string;
+}
+
+interface Brand {
+  id: number;
+  name: string;
+}
+
+interface Unit {
+  id: number;
+  name: string;
+  symbol: string;
 }
 
 export default function ProductsPage() {
@@ -32,6 +48,11 @@ export default function ProductsPage() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  // New state for dropdown data
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
+  const [units, setUnits] = useState<Unit[]>([]);
+  const [dropdownLoading, setDropdownLoading] = useState(false);
 
   // Fetch products from API
   useEffect(() => {
@@ -50,6 +71,37 @@ export default function ProductsPage() {
 
     fetchProducts();
   }, [searchTerm]);
+
+  // Fetch dropdown data when modal opens
+  useEffect(() => {
+    const fetchDropdownData = async () => {
+      if (isModalOpen) {
+        setDropdownLoading(true);
+        try {
+          // Fetch categories
+          const categoriesResponse = await fetch("/api/categories");
+          const categoriesData = await categoriesResponse.json();
+          setCategories(categoriesData.categories || []);
+
+          // Fetch brands
+          const brandsResponse = await fetch("/api/brands");
+          const brandsData = await brandsResponse.json();
+          setBrands(brandsData.brands || []);
+
+          // Fetch units
+          const unitsResponse = await fetch("/api/units");
+          const unitsData = await unitsResponse.json();
+          setUnits(unitsData.units || []);
+        } catch (error) {
+          console.error("Error fetching dropdown data:", error);
+        } finally {
+          setDropdownLoading(false);
+        }
+      }
+    };
+
+    fetchDropdownData();
+  }, [isModalOpen]);
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -130,6 +182,14 @@ export default function ProductsPage() {
     }
   };
 
+  // Close modal when clicking outside
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      setIsModalOpen(false);
+      setEditingProduct(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -145,7 +205,7 @@ export default function ProductsPage() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+            className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
           >
             <ArrowDownTrayIcon className="h-5 w-5 mr-2" />
             Import
@@ -153,7 +213,7 @@ export default function ProductsPage() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+            className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
           >
             <ArrowUpTrayIcon className="h-5 w-5 mr-2" />
             Export
@@ -162,7 +222,7 @@ export default function ProductsPage() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
           >
             <PlusIcon className="h-5 w-5 mr-2" />
             Add Product
@@ -297,7 +357,7 @@ export default function ProductsPage() {
                               // Add to cart functionality would go here
                               console.log("Add to cart:", product);
                             }}
-                            className="text-blue-600 hover:text-blue-900"
+                            className="text-blue-600 hover:text-blue-900 transition-colors"
                           >
                             <PlusIcon className="h-5 w-5" />
                           </button>
@@ -306,13 +366,13 @@ export default function ProductsPage() {
                               setEditingProduct(product);
                               setIsModalOpen(true);
                             }}
-                            className="text-green-600 hover:text-green-900"
+                            className="text-green-600 hover:text-green-900 transition-colors"
                           >
                             <PencilIcon className="h-5 w-5" />
                           </button>
                           <button
                             onClick={() => handleDelete(product.id)}
-                            className="text-red-600 hover:text-red-900"
+                            className="text-red-600 hover:text-red-900 transition-colors"
                           >
                             <TrashIcon className="h-5 w-5" />
                           </button>
@@ -354,11 +414,14 @@ export default function ProductsPage() {
 
       {/* Add/Edit Product Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div
+          className="fixed inset-0 modal-backdrop flex items-center justify-center p-4 z-50"
+          onClick={handleBackdropClick}
+        >
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            className="modal-container slide-in w-full max-w-2xl max-h-[90vh] overflow-y-auto"
           >
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
@@ -370,7 +433,7 @@ export default function ProductsPage() {
                     setIsModalOpen(false);
                     setEditingProduct(null);
                   }}
-                  className="text-gray-400 hover:text-gray-500"
+                  className="text-gray-400 hover:text-gray-500 transition-colors"
                 >
                   <svg
                     className="h-6 w-6"
@@ -392,10 +455,7 @@ export default function ProductsPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label
-                      htmlFor="name"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="name" className="form-label">
                       Product Name
                     </label>
                     <input
@@ -403,88 +463,87 @@ export default function ProductsPage() {
                       id="name"
                       name="name"
                       defaultValue={editingProduct?.name || ""}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="form-input w-full"
                       required
+                      placeholder="Enter product name"
                     />
                   </div>
 
                   <div>
-                    <label
-                      htmlFor="categoryId"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="categoryId" className="form-label">
                       Category
                     </label>
                     <select
                       id="categoryId"
                       name="categoryId"
-                      defaultValue={editingProduct?.category?.name || ""}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      defaultValue={editingProduct?.category?.id || ""}
+                      className="form-select w-full"
                       required
                     >
                       <option value="">Select Category</option>
-                      <option value="1">Fruits</option>
-                      <option value="2">Vegetables</option>
-                      <option value="3">Dairy</option>
-                      <option value="4">Bakery</option>
-                      <option value="5">Meat</option>
-                      <option value="6">Beverages</option>
-                      <option value="7">Snacks</option>
-                      <option value="8">Frozen</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
                     </select>
+                    {dropdownLoading && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        Loading categories...
+                      </p>
+                    )}
                   </div>
 
                   <div>
-                    <label
-                      htmlFor="brandId"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="brandId" className="form-label">
                       Brand
                     </label>
                     <select
                       id="brandId"
                       name="brandId"
-                      defaultValue={editingProduct?.brand?.name || ""}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      defaultValue={editingProduct?.brand?.id || ""}
+                      className="form-select w-full"
                     >
                       <option value="">Select Brand</option>
-                      <option value="1">Organic Farms</option>
-                      <option value="2">Fresh Choice</option>
-                      <option value="3">Local Produce</option>
-                      <option value="4">Healthy Options</option>
-                      <option value="5">Farm Fresh</option>
+                      {brands.map((brand) => (
+                        <option key={brand.id} value={brand.id}>
+                          {brand.name}
+                        </option>
+                      ))}
                     </select>
+                    {dropdownLoading && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        Loading brands...
+                      </p>
+                    )}
                   </div>
 
                   <div>
-                    <label
-                      htmlFor="unitId"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="unitId" className="form-label">
                       Unit
                     </label>
                     <select
                       id="unitId"
                       name="unitId"
-                      defaultValue={editingProduct?.unit?.symbol || "ea"}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      defaultValue={editingProduct?.unit?.id || ""}
+                      className="form-select w-full"
                     >
                       <option value="">Select Unit</option>
-                      <option value="1">Each (ea)</option>
-                      <option value="2">Pound (lb)</option>
-                      <option value="3">Kilogram (kg)</option>
-                      <option value="4">Gram (g)</option>
-                      <option value="5">Liter (L)</option>
-                      <option value="6">Milliliter (mL)</option>
-                      <option value="7">Dozen (dz)</option>
+                      {units.map((unit) => (
+                        <option key={unit.id} value={unit.id}>
+                          {unit.name} ({unit.symbol})
+                        </option>
+                      ))}
                     </select>
+                    {dropdownLoading && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        Loading units...
+                      </p>
+                    )}
                   </div>
 
                   <div>
-                    <label
-                      htmlFor="sellingPrice"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="sellingPrice" className="form-label">
                       Selling Price ($)
                     </label>
                     <input
@@ -493,16 +552,14 @@ export default function ProductsPage() {
                       name="sellingPrice"
                       step="0.01"
                       defaultValue={editingProduct?.sellingPrice || ""}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="form-input w-full"
                       required
+                      placeholder="0.00"
                     />
                   </div>
 
                   <div>
-                    <label
-                      htmlFor="costPrice"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="costPrice" className="form-label">
                       Cost Price ($)
                     </label>
                     <input
@@ -511,16 +568,14 @@ export default function ProductsPage() {
                       name="costPrice"
                       step="0.01"
                       defaultValue={editingProduct?.costPrice || ""}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="form-input w-full"
                       required
+                      placeholder="0.00"
                     />
                   </div>
 
                   <div>
-                    <label
-                      htmlFor="stock"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="stock" className="form-label">
                       Stock Quantity
                     </label>
                     <input
@@ -528,16 +583,14 @@ export default function ProductsPage() {
                       id="stock"
                       name="stock"
                       defaultValue={editingProduct?.stock || ""}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="form-input w-full"
                       required
+                      placeholder="0"
                     />
                   </div>
 
                   <div>
-                    <label
-                      htmlFor="minStock"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="minStock" className="form-label">
                       Minimum Stock
                     </label>
                     <input
@@ -545,15 +598,13 @@ export default function ProductsPage() {
                       id="minStock"
                       name="minStock"
                       defaultValue={editingProduct?.minStock || 10}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="form-input w-full"
+                      placeholder="10"
                     />
                   </div>
 
                   <div>
-                    <label
-                      htmlFor="sku"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="sku" className="form-label">
                       SKU
                     </label>
                     <input
@@ -561,15 +612,13 @@ export default function ProductsPage() {
                       id="sku"
                       name="sku"
                       defaultValue={editingProduct?.sku || ""}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="form-input w-full"
+                      placeholder="Enter SKU"
                     />
                   </div>
 
                   <div>
-                    <label
-                      htmlFor="barcode"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="barcode" className="form-label">
                       Barcode
                     </label>
                     <input
@@ -577,15 +626,13 @@ export default function ProductsPage() {
                       id="barcode"
                       name="barcode"
                       defaultValue={editingProduct?.barcode || ""}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="form-input w-full"
+                      placeholder="Enter barcode"
                     />
                   </div>
 
-                  <div>
-                    <label
-                      htmlFor="expiryDate"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                  <div className="md:col-span-2">
+                    <label htmlFor="expiryDate" className="form-label">
                       Expiry Date
                     </label>
                     <input
@@ -599,7 +646,7 @@ export default function ProductsPage() {
                               .split("T")[0]
                           : ""
                       }
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="form-input w-full"
                     />
                   </div>
                 </div>
@@ -611,7 +658,7 @@ export default function ProductsPage() {
                       setIsModalOpen(false);
                       setEditingProduct(null);
                     }}
-                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                    className="btn btn-secondary px-4 py-2"
                   >
                     Cancel
                   </button>
@@ -619,7 +666,7 @@ export default function ProductsPage() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     type="submit"
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                    className="btn btn-primary px-4 py-2"
                   >
                     {editingProduct ? "Update Product" : "Add Product"}
                   </motion.button>

@@ -199,7 +199,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
             </AnimatePresence>
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="p-1 rounded-md hover:bg-gray-100"
+              className="p-1 rounded-md hover:bg-gray-100 transition-colors"
             >
               <svg
                 className="h-5 w-5 text-gray-500"

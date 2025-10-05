@@ -513,11 +513,11 @@ export default function DiscountRulesPage() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 modal-backdrop flex items-center justify-center p-4 z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md"
+            className="modal-container slide-in p-6 w-full max-w-md"
           >
             <h2 className="text-xl font-bold text-gray-900 mb-4">
               {editingRule ? "Edit Discount Rule" : "Add New Discount Rule"}

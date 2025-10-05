@@ -84,14 +84,29 @@ export async function POST(request: NextRequest) {
       });
 
       // Create sale items and update product stock
+      const saleItems = [];
       for (const item of body.saleItems) {
-        await prisma.saleItem.create({
+        const saleItem = await prisma.saleItem.create({
           data: {
             saleId: newSale.id,
             productId: item.productId,
             quantity: parseInt(item.quantity),
             unitPrice: parseFloat(item.unitPrice),
             totalPrice: parseFloat(item.totalPrice),
+          },
+        });
+
+        // Add to saleItems array for response
+        saleItems.push({
+          ...saleItem,
+          product: {
+            name:
+              (
+                await prisma.product.findUnique({
+                  where: { id: item.productId },
+                  select: { name: true },
+                })
+              )?.name || "Unknown Product",
           },
         });
 
@@ -106,7 +121,7 @@ export async function POST(request: NextRequest) {
         });
       }
 
-      return newSale;
+      return { ...newSale, saleItems };
     });
 
     return NextResponse.json(sale, { status: 201 });

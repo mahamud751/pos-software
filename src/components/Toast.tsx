@@ -61,7 +61,8 @@ const Toast: React.FC<ToastProps> = ({ id, message, type, onClose }) => {
       initial={{ opacity: 0, y: 50, scale: 0.3 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
-      className={`max-w-sm w-full shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden border-l-4 ${bgColor} ${borderColor}`}
+      whileHover={{ scale: 1.02 }}
+      className={`max-w-sm w-full shadow-xl rounded-xl pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden border-l-4 ${bgColor} ${borderColor}`}
     >
       <div className="p-4">
         <div className="flex items-start">
@@ -74,7 +75,7 @@ const Toast: React.FC<ToastProps> = ({ id, message, type, onClose }) => {
           <div className="ml-4 flex-shrink-0 flex">
             <button
               onClick={() => onClose(id)}
-              className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none"
+              className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none transition-colors"
             >
               <span className="sr-only">Close</span>
               <svg

@@ -251,11 +251,11 @@ export default function CustomersPage() {
 
       {/* Add/Edit Customer Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 modal-backdrop flex items-center justify-center p-4 z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            className="modal-container slide-in w-full max-w-2xl max-h-[90vh] overflow-y-auto"
           >
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
@@ -267,7 +267,7 @@ export default function CustomersPage() {
                     setIsModalOpen(false);
                     setEditingCustomer(null);
                   }}
-                  className="text-gray-400 hover:text-gray-500"
+                  className="text-gray-400 hover:text-gray-500 transition-colors"
                 >
                   <svg
                     className="h-6 w-6"
@@ -289,10 +289,7 @@ export default function CustomersPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label
-                      htmlFor="name"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="name" className="form-label">
                       Full Name
                     </label>
                     <input
@@ -300,16 +297,14 @@ export default function CustomersPage() {
                       id="name"
                       name="name"
                       defaultValue={editingCustomer?.name || ""}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="form-input w-full"
                       required
+                      placeholder="Enter full name"
                     />
                   </div>
 
                   <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="email" className="form-label">
                       Email Address
                     </label>
                     <input
@@ -317,16 +312,14 @@ export default function CustomersPage() {
                       id="email"
                       name="email"
                       defaultValue={editingCustomer?.email || ""}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="form-input w-full"
                       required
+                      placeholder="Enter email address"
                     />
                   </div>
 
                   <div>
-                    <label
-                      htmlFor="phone"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="phone" className="form-label">
                       Phone Number
                     </label>
                     <input
@@ -334,15 +327,13 @@ export default function CustomersPage() {
                       id="phone"
                       name="phone"
                       defaultValue={editingCustomer?.phone || ""}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="form-input w-full"
+                      placeholder="Enter phone number"
                     />
                   </div>
 
                   <div>
-                    <label
-                      htmlFor="loyaltyPoints"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="loyaltyPoints" className="form-label">
                       Loyalty Points
                     </label>
                     <input
@@ -350,15 +341,13 @@ export default function CustomersPage() {
                       id="loyaltyPoints"
                       name="loyaltyPoints"
                       defaultValue={editingCustomer?.loyaltyPoints || 0}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="form-input w-full"
+                      placeholder="0"
                     />
                   </div>
 
                   <div>
-                    <label
-                      htmlFor="creditLimit"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="creditLimit" className="form-label">
                       Credit Limit ($)
                     </label>
                     <input
@@ -367,15 +356,13 @@ export default function CustomersPage() {
                       name="creditLimit"
                       step="0.01"
                       defaultValue={editingCustomer?.creditLimit || 0}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="form-input w-full"
+                      placeholder="0.00"
                     />
                   </div>
 
                   <div className="md:col-span-2">
-                    <label
-                      htmlFor="address"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="address" className="form-label">
                       Address
                     </label>
                     <textarea
@@ -383,7 +370,8 @@ export default function CustomersPage() {
                       name="address"
                       rows={3}
                       defaultValue={editingCustomer?.address || ""}
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className="form-textarea w-full"
+                      placeholder="Enter address"
                     />
                   </div>
                 </div>
@@ -395,7 +383,7 @@ export default function CustomersPage() {
                       setIsModalOpen(false);
                       setEditingCustomer(null);
                     }}
-                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                    className="btn btn-secondary px-4 py-2"
                   >
                     Cancel
                   </button>
@@ -403,7 +391,7 @@ export default function CustomersPage() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     type="submit"
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                    className="btn btn-primary px-4 py-2"
                   >
                     {editingCustomer ? "Update Customer" : "Add Customer"}
                   </motion.button>

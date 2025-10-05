@@ -19,6 +19,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate amount
+    if (typeof body.amount !== "number" || body.amount <= 0) {
+      return NextResponse.json(
+        { error: "Invalid payment amount" },
+        { status: 400 }
+      );
+    }
+
+    // Validate saleId
+    if (typeof body.saleId !== "number" || body.saleId <= 0) {
+      return NextResponse.json({ error: "Invalid sale ID" }, { status: 400 });
+    }
+
     // Create payment intent
     const result = await createPaymentIntent(
       body.amount,

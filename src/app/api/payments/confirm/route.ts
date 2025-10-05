@@ -20,6 +20,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate amount
+    if (typeof body.amount !== "number" || body.amount < 0) {
+      return NextResponse.json(
+        {
+          error: "Invalid payment amount",
+        },
+        { status: 400 }
+      );
+    }
+
     // Confirm payment with Stripe
     const result = await confirmPayment(
       body.paymentIntentId,
@@ -42,7 +52,10 @@ export async function POST(request: NextRequest) {
 
     if (!dbResult.success) {
       console.error("Failed to save payment to database:", dbResult.error);
-      // Note: In a real application, you might want to handle this more gracefully
+      return NextResponse.json(
+        { error: `Failed to update sale record: ${dbResult.error}` },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({

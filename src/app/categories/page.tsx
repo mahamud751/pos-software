@@ -339,21 +339,18 @@ export default function CategoriesPage() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 modal-backdrop flex items-center justify-center p-4 z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md"
+            className="modal-container slide-in p-6 w-full max-w-md"
           >
             <h2 className="text-xl font-bold text-gray-900 mb-4">
               {editingCategory ? "Edit Category" : "Add New Category"}
             </h2>
             <form onSubmit={editingCategory ? handleUpdate : handleCreate}>
               <div className="mb-4">
-                <label
-                  htmlFor="categoryName"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
+                <label htmlFor="categoryName" className="form-label">
                   Category Name
                 </label>
                 <input
@@ -361,7 +358,7 @@ export default function CategoriesPage() {
                   id="categoryName"
                   value={categoryName}
                   onChange={(e) => setCategoryName(e.target.value)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="form-input w-full"
                   placeholder="Enter category name"
                   required
                 />
@@ -375,14 +372,11 @@ export default function CategoriesPage() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                  className="btn btn-secondary px-4 py-2"
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                >
+                <button type="submit" className="btn btn-primary px-4 py-2">
                   {editingCategory ? "Update" : "Create"}
                 </button>
               </div>

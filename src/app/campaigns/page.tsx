@@ -50,7 +50,9 @@ export default function CampaignsPage() {
       try {
         setLoading(true);
         const response = await fetch(
-          `/api/campaigns?page=${currentPage}&search=${searchTerm}&status=${statusFilter === "all" ? "" : statusFilter}`
+          `/api/campaigns?page=${currentPage}&search=${searchTerm}&status=${
+            statusFilter === "all" ? "" : statusFilter
+          }`
         );
         const data = await response.json();
         setCampaigns(data.campaigns);
@@ -94,7 +96,9 @@ export default function CampaignsPage() {
           const updatedCampaign = await response.json();
           setCampaigns(
             campaigns.map((c) =>
-              c.id === updatedCampaign.id ? { ...updatedCampaign, _count: c._count } : c
+              c.id === updatedCampaign.id
+                ? { ...updatedCampaign, _count: c._count }
+                : c
             )
           );
         } else {
@@ -114,7 +118,10 @@ export default function CampaignsPage() {
 
         if (response.ok) {
           const newCampaign = await response.json();
-          setCampaigns([...campaigns, { ...newCampaign, _count: { coupons: 0 } }]);
+          setCampaigns([
+            ...campaigns,
+            { ...newCampaign, _count: { coupons: 0 } },
+          ]);
         } else {
           const errorData = await response.json();
           setError(errorData.error || "Failed to create campaign");
@@ -185,7 +192,9 @@ export default function CampaignsPage() {
         const updatedCampaign = await response.json();
         setCampaigns(
           campaigns.map((c) =>
-            c.id === updatedCampaign.id ? { ...updatedCampaign, _count: c._count } : c
+            c.id === updatedCampaign.id
+              ? { ...updatedCampaign, _count: c._count }
+              : c
           )
         );
       } else {
@@ -364,11 +373,13 @@ export default function CampaignsPage() {
                                 : "bg-blue-100 text-blue-800"
                             }`}
                           >
-                            {campaign.status.charAt(0).toUpperCase() + campaign.status.slice(1)}
+                            {campaign.status.charAt(0).toUpperCase() +
+                              campaign.status.slice(1)}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {formatDate(campaign.startDate)} - {formatDate(campaign.endDate)}
+                          {formatDate(campaign.startDate)} -{" "}
+                          {formatDate(campaign.endDate)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           {campaign._count.coupons}
@@ -379,7 +390,7 @@ export default function CampaignsPage() {
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <button
                             onClick={() =>
-                              window.location.href = `/campaigns/${campaign.id}`
+                              (window.location.href = `/campaigns/${campaign.id}`)
                             }
                             className="text-green-600 hover:text-green-900 mr-3"
                           >
@@ -393,7 +404,9 @@ export default function CampaignsPage() {
                           </button>
                           {campaign.status === "draft" && (
                             <button
-                              onClick={() => handleStatusChange(campaign.id, "active")}
+                              onClick={() =>
+                                handleStatusChange(campaign.id, "active")
+                              }
                               className="text-green-600 hover:text-green-900 mr-3"
                               title="Activate"
                             >
@@ -402,7 +415,9 @@ export default function CampaignsPage() {
                           )}
                           {campaign.status === "active" && (
                             <button
-                              onClick={() => handleStatusChange(campaign.id, "paused")}
+                              onClick={() =>
+                                handleStatusChange(campaign.id, "paused")
+                              }
                               className="text-yellow-600 hover:text-yellow-900 mr-3"
                               title="Pause"
                             >
@@ -428,9 +443,7 @@ export default function CampaignsPage() {
               <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                 <div className="flex-1 flex justify-between sm:hidden">
                   <button
-                    onClick={() =>
-                      setCurrentPage(Math.max(1, currentPage - 1))
-                    }
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
                     className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                   >
@@ -501,11 +514,11 @@ export default function CampaignsPage() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 modal-backdrop flex items-center justify-center p-4 z-50">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md"
+            className="modal-container slide-in p-6 w-full max-w-md"
           >
             <h2 className="text-xl font-bold text-gray-900 mb-4">
               {editingCampaign ? "Edit Campaign" : "Add New Campaign"}

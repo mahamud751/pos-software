@@ -8,12 +8,20 @@ export async function createPaymentIntent(
   metadata?: Record<string, string>
 ) {
   try {
+    // Validate amount
+    if (amount <= 0) {
+      throw new Error("Invalid payment amount");
+    }
+
+    const amountInCents = Math.round(amount * 100); // Convert to cents
+
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100), // Convert to cents
+      amount: amountInCents,
       currency,
       metadata,
       automatic_payment_methods: {
         enabled: true,
+        allow_redirects: "never",
       },
     });
 
@@ -40,14 +48,35 @@ export async function confirmPayment(
   paymentMethodId: string
 ) {
   try {
-    const paymentIntent = await stripe.paymentIntents.confirm(paymentIntentId, {
-      payment_method: paymentMethodId,
-    });
+    // Validate inputs
+    if (!paymentIntentId || !paymentMethodId) {
+      throw new Error("Payment intent ID and payment method ID are required");
+    }
+
+    // First, retrieve the payment intent to check its status
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+    // If it's already succeeded, don't try to confirm it again
+    if (paymentIntent.status === "succeeded") {
+      return {
+        success: true,
+        status: paymentIntent.status,
+        paymentIntentId: paymentIntent.id,
+      };
+    }
+
+    // Otherwise, confirm the payment
+    const confirmedPaymentIntent = await stripe.paymentIntents.confirm(
+      paymentIntentId,
+      {
+        payment_method: paymentMethodId,
+      }
+    );
 
     return {
       success: true,
-      status: paymentIntent.status,
-      paymentIntentId: paymentIntent.id,
+      status: confirmedPaymentIntent.status,
+      paymentIntentId: confirmedPaymentIntent.id,
     };
   } catch (error) {
     console.error("Error confirming payment:", error);
@@ -144,20 +173,32 @@ export async function savePaymentToDatabase(paymentData: {
   paymentIntentId?: string;
 }) {
   try {
+    // Validate inputs
+    if (!paymentData.saleId || paymentData.amount < 0) {
+      throw new Error("Invalid sale ID or payment amount");
+    }
+
+    // First, get the current sale to calculate the correct amountDue
+    const currentSale = await prisma.sale.findUnique({
+      where: { id: paymentData.saleId },
+    });
+
+    if (!currentSale) {
+      throw new Error("Sale not found");
+    }
+
+    // Calculate new amount paid (existing amount paid + new payment)
+    const newAmountPaid = currentSale.amountPaid + paymentData.amount;
+    // Calculate amount due (totalAmount - new amount paid)
+    const amountDue = Math.max(0, currentSale.totalAmount - newAmountPaid);
+
     const payment = await prisma.sale.update({
       where: { id: paymentData.saleId },
       data: {
-        amountPaid: paymentData.amount,
-        amountDue: 0, // Assuming full payment
+        amountPaid: newAmountPaid,
+        amountDue: amountDue,
         paymentMethod: paymentData.paymentMethod,
-        status: paymentData.status,
-      },
-    });
-
-    // Also create a payment record
-    await prisma.sale.update({
-      where: { id: paymentData.saleId },
-      data: {
+        status: amountDue <= 0 ? "completed" : "partial",
         notes: paymentData.transactionId,
       },
     });

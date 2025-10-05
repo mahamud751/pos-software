@@ -42,17 +42,17 @@ export default function BarcodeScanner({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 modal-backdrop flex items-center justify-center p-4 z-50">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md"
+        className="modal-container slide-in p-6 w-full max-w-md"
       >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-gray-900">Scan Barcode</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-500"
+            className="text-gray-400 hover:text-gray-500 transition-colors"
           >
             <XMarkIcon className="h-6 w-6" />
           </button>
@@ -74,7 +74,7 @@ export default function BarcodeScanner({
                 value={barcode}
                 onChange={(e) => setBarcode(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-center text-lg"
+                className="form-input w-full px-4 py-3 text-center text-lg"
                 placeholder="Enter barcode"
                 autoFocus
               />
@@ -83,13 +83,13 @@ export default function BarcodeScanner({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className="btn btn-secondary flex-1 px-4 py-3"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="flex-1 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                className="btn btn-primary flex-1 px-4 py-3"
               >
                 Scan
               </button>
