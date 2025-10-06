@@ -30,6 +30,13 @@ interface WarehouseStock {
   };
 }
 
+interface Product {
+  id: number;
+  name: string;
+  sku: string;
+  sellingPrice: number;
+}
+
 export default function WarehouseDetailPage({
   params,
 }: {
@@ -45,7 +52,7 @@ export default function WarehouseDetailPage({
   const [showAddStockModal, setShowAddStockModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState("");
   const [stockQuantity, setStockQuantity] = useState("");
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState("");
 
   // Fetch warehouse details

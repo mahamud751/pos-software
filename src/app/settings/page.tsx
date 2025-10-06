@@ -7,7 +7,6 @@ import {
   PrinterIcon,
   BellIcon,
   GlobeAltIcon,
-  CurrencyDollarIcon,
   CreditCardIcon,
 } from "@heroicons/react/24/outline";
 

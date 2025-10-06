@@ -4,9 +4,10 @@ import prisma from "@/lib/prisma";
 // GET /api/coupons/[id] - Get a specific coupon
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const coupon = await prisma.coupon.findUnique({
       where: { id: parseInt(params.id) },
       include: {
@@ -37,9 +38,10 @@ export async function GET(
 // PUT /api/coupons/[id] - Update a coupon
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const body = await request.json();
 
     // Check if coupon exists
@@ -96,9 +98,10 @@ export async function PUT(
 // DELETE /api/coupons/[id] - Delete a coupon
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     // Check if coupon exists
     const existingCoupon = await prisma.coupon.findUnique({
       where: { id: parseInt(params.id) },

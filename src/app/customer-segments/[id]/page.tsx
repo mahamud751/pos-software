@@ -29,6 +29,14 @@ interface CustomerSegment {
   }[];
 }
 
+interface Customer {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  loyaltyPoints: number;
+}
+
 export default function CustomerSegmentDetailPage({
   params,
 }: {
@@ -37,7 +45,7 @@ export default function CustomerSegmentDetailPage({
   const router = useRouter();
   const [segment, setSegment] = useState<CustomerSegment | null>(null);
   const [loading, setLoading] = useState(true);
-  const [allCustomers, setAllCustomers] = useState<any[]>([]);
+  const [allCustomers, setAllCustomers] = useState<Customer[]>([]);
   const [showAddCustomerModal, setShowAddCustomerModal] = useState(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [error, setError] = useState("");
@@ -131,7 +139,7 @@ export default function CustomerSegmentDetailPage({
           Segment not found
         </h3>
         <p className="mt-1 text-sm text-gray-500">
-          The customer segment you're looking for doesn't exist.
+          The customer segment you&apos;re looking for doesn&apos;t exist.
         </p>
       </div>
     );
@@ -206,7 +214,7 @@ export default function CustomerSegmentDetailPage({
               No members
             </h3>
             <p className="mt-1 text-sm text-gray-500">
-              This segment doesn't have any customers yet.
+              This segment doesn&apos;t have any customers yet.
             </p>
           </div>
         ) : (

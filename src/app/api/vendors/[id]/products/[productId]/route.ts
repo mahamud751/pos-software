@@ -5,9 +5,10 @@ import { verifyToken, getTokenFromRequest } from "@/lib/auth";
 // PUT /api/vendors/[id]/products/[productId] - Update a vendor product
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string; productId: string } }
+  context: { params: Promise<{ id: string; productId: string }> }
 ) {
   try {
+    const params = await context.params;
     const token = getTokenFromRequest(request);
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -60,9 +61,10 @@ export async function PUT(
 // DELETE /api/vendors/[id]/products/[productId] - Remove a product from a vendor
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string; productId: string } }
+  context: { params: Promise<{ id: string; productId: string }> }
 ) {
   try {
+    const params = await context.params;
     const token = getTokenFromRequest(request);
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -4,9 +4,10 @@ import prisma from "@/lib/prisma";
 // GET /api/warehouses/[id] - Get a specific warehouse
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const id = parseInt(params.id);
 
     if (isNaN(id)) {
@@ -40,9 +41,10 @@ export async function GET(
 // PUT /api/warehouses/[id] - Update a warehouse
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const id = parseInt(params.id);
 
     if (isNaN(id)) {
@@ -88,9 +90,10 @@ export async function PUT(
 // DELETE /api/warehouses/[id] - Delete a warehouse
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const id = parseInt(params.id);
 
     if (isNaN(id)) {

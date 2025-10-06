@@ -4,9 +4,10 @@ import prisma from "@/lib/prisma";
 // GET /api/discount-rules/[id] - Get a specific discount rule
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const discountRule = await prisma.discountRule.findUnique({
       where: { id: parseInt(params.id) },
       include: {
@@ -54,9 +55,10 @@ export async function GET(
 // PUT /api/discount-rules/[id] - Update a discount rule
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const body = await request.json();
 
     // Check if discount rule exists
@@ -72,7 +74,10 @@ export async function PUT(
     }
 
     // If coupon code is being updated, check if it already exists
-    if (body.couponCode && body.couponCode !== existingDiscountRule.couponCode) {
+    if (
+      body.couponCode &&
+      body.couponCode !== existingDiscountRule.couponCode
+    ) {
       const duplicateRule = await prisma.discountRule.findUnique({
         where: { couponCode: body.couponCode },
       });
@@ -115,9 +120,10 @@ export async function PUT(
 // DELETE /api/discount-rules/[id] - Delete a discount rule
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     // Check if discount rule exists
     const existingDiscountRule = await prisma.discountRule.findUnique({
       where: { id: parseInt(params.id) },

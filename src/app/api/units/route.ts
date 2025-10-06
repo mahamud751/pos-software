@@ -11,7 +11,12 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     // Build where clause for search
-    const where: any = {};
+    const where: {
+      OR?: {
+        name?: { contains: string; mode: "insensitive" };
+        symbol?: { contains: string; mode: "insensitive" };
+      }[];
+    } = {};
     if (search) {
       where.OR = [
         {

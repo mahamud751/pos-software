@@ -103,11 +103,6 @@ export default function ReportsPage() {
     }).format(amount);
   };
 
-  // Format date
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
-
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">

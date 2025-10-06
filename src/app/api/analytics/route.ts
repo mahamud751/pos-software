@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const period = searchParams.get("period") || "7d"; // 7d, 30d, 90d
     const endDate = new Date();
-    let startDate = new Date();
+    const startDate = new Date();
 
     // Set start date based on period
     switch (period) {
@@ -125,14 +125,17 @@ export async function GET(request: NextRequest) {
     });
 
     // Group sales by date for chart
-    const salesByDate = recentSales.reduce((acc: any, sale) => {
-      const date = new Date(sale.createdAt).toISOString().split("T")[0];
-      if (!acc[date]) {
-        acc[date] = 0;
-      }
-      acc[date] += sale.totalAmount;
-      return acc;
-    }, {});
+    const salesByDate: { [date: string]: number } = recentSales.reduce(
+      (acc, sale) => {
+        const date = new Date(sale.createdAt).toISOString().split("T")[0];
+        if (!acc[date]) {
+          acc[date] = 0;
+        }
+        acc[date] += sale.totalAmount;
+        return acc;
+      },
+      {} as { [date: string]: number }
+    );
 
     // Format chart data
     const chartData = Object.entries(salesByDate).map(([date, amount]) => ({
@@ -162,7 +165,7 @@ export async function GET(request: NextRequest) {
 }
 
 // POST /api/analytics - Generate analytics data (for background jobs)
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // This endpoint would be called by a background job to generate analytics data
     // For now, we'll just return a success message

@@ -146,6 +146,23 @@ prisma/
 └── migrations/         # Database migrations
 ```
 
+## Deployment to Vercel
+
+1. Push your code to a GitHub repository
+2. Sign up or log in to [Vercel](https://vercel.com)
+3. Click "New Project" and import your GitHub repository
+4. Configure the project settings:
+   - Framework Preset: Next.js
+   - Build Command: `npm run build`
+   - Output Directory: `.next`
+5. Add environment variables in the Vercel dashboard:
+   - `DATABASE_URL` - Your production PostgreSQL database URL
+   - `JWT_SECRET` - Your JWT secret key
+   - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` - Your Stripe publishable key
+   - `STRIPE_SECRET_KEY` - Your Stripe secret key
+6. Click "Deploy" and wait for the build to complete
+7. Your application will be available at the provided Vercel URL
+
 ## Pending Features
 
 ### Multi-Vendor Support
@@ -170,4 +187,3 @@ This project is licensed under the MIT License.
 ## Support
 
 For support, please open an issue on the repository or contact the development team.
-# pos-software

@@ -14,7 +14,7 @@ const stripePromise = loadStripe(
 );
 
 export default function CheckoutPage() {
-  const { cart, getTotalItems, getTotalPrice, clearCart } = useCart();
+  const { cart, getTotalPrice, clearCart } = useCart();
   const router = useRouter();
   const [clientSecret, setClientSecret] = useState("");
   const [paymentStatus, setPaymentStatus] = useState<

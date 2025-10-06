@@ -11,6 +11,16 @@ import {
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 
+interface InventoryAlert {
+  id: string;
+  type: "low-stock" | "expiring";
+  title: string;
+  message: string;
+  productId: number;
+  priority: "high" | "medium";
+  createdAt: string;
+}
+
 // Stat card component with enhanced design
 const StatCard = ({
   title,
@@ -203,7 +213,7 @@ export default function Dashboard() {
     };
   } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [inventoryAlerts, setInventoryAlerts] = useState<any[]>([]);
+  const [inventoryAlerts, setInventoryAlerts] = useState<InventoryAlert[]>([]);
 
   useEffect(() => {
     const fetchSummary = async () => {

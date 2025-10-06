@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Return user data (excluding password)
-    const { password, ...userWithoutPassword } = user;
+    const { ...userWithoutPassword } = user;
 
     return NextResponse.json({
       user: userWithoutPassword,

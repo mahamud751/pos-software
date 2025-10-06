@@ -1,14 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import {
-  MagnifyingGlassIcon,
-  TruckIcon,
-  CheckCircleIcon,
-  XCircleIcon,
-  EyeIcon,
-} from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, EyeIcon } from "@heroicons/react/24/outline";
 
 interface Delivery {
   id: number;

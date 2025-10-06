@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     // Build where clause
-    const where: any = {};
+    const where: { name?: { contains: string; mode: "insensitive" } } = {};
 
     if (search) {
       where.name = {

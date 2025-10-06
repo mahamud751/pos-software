@@ -4,9 +4,10 @@ import prisma from "@/lib/prisma";
 // GET /api/customers/[id]/communications - Get communications for a customer
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const customerId = parseInt(params.id);
 
     if (isNaN(customerId)) {
@@ -23,7 +24,10 @@ export async function GET(
     const skip = (page - 1) * limit;
 
     // Build where clause
-    const where: any = {
+    const where: {
+      customerId: number;
+      type?: string;
+    } = {
       customerId: customerId,
     };
 
@@ -70,9 +74,10 @@ export async function GET(
 // POST /api/customers/[id]/communications - Create a new communication for a customer
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const customerId = parseInt(params.id);
 
     if (isNaN(customerId)) {

@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeftIcon,
   PencilIcon,
@@ -55,6 +54,33 @@ interface Vendor {
   }[];
 }
 
+interface VendorProduct {
+  id: number;
+  productId: number;
+  costPrice: number;
+  sellingPrice: number;
+  stock: number;
+  isActive: boolean;
+  product: {
+    name: string;
+    sku: string;
+  };
+}
+
+interface Commission {
+  id: number;
+  amount: number;
+  status: string;
+  paymentDate: string | null;
+  transactionId: string | null;
+  sale: {
+    id: number;
+    invoiceNumber: string;
+    totalAmount: number;
+    createdAt: string;
+  } | null;
+}
+
 export default function VendorDetailPage({
   params,
 }: {
@@ -66,8 +92,8 @@ export default function VendorDetailPage({
   const [loading, setLoading] = useState(true);
   const [productsPage, setProductsPage] = useState(1);
   const [commissionsPage, setCommissionsPage] = useState(1);
-  const [products, setProducts] = useState<any[]>([]);
-  const [commissions, setCommissions] = useState<any[]>([]);
+  const [products, setProducts] = useState<VendorProduct[]>([]);
+  const [commissions, setCommissions] = useState<Commission[]>([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalCommissions, setTotalCommissions] = useState(0);
   const [productsLoading, setProductsLoading] = useState(true);

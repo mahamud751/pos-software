@@ -4,9 +4,10 @@ import prisma from "@/lib/prisma";
 // GET /api/deliveries/[id] - Get a specific delivery
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const delivery = await prisma.delivery.findUnique({
       where: { id: parseInt(params.id) },
       include: {
@@ -48,9 +49,10 @@ export async function GET(
 // PUT /api/deliveries/[id] - Update a delivery
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const body = await request.json();
 
     // Check if delivery exists
@@ -107,9 +109,10 @@ export async function PUT(
 // DELETE /api/deliveries/[id] - Delete a delivery
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     // Check if delivery exists
     const existingDelivery = await prisma.delivery.findUnique({
       where: { id: parseInt(params.id) },

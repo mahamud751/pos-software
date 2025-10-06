@@ -4,9 +4,10 @@ import prisma from "@/lib/prisma";
 // PUT /api/purchase-orders/[id]/items/[itemId] - Update a purchase order item (receive items)
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string; itemId: string } }
+  context: { params: Promise<{ id: string; itemId: string }> }
 ) {
   try {
+    const params = await context.params;
     const orderId = parseInt(params.id);
     const itemId = parseInt(params.itemId);
 

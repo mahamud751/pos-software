@@ -11,7 +11,15 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search") || "";
     const status = searchParams.get("status") || "";
 
-    const where: any = {};
+    const where: {
+      OR?: {
+        name?: { contains: string; mode: "insensitive" };
+        email?: { contains: string; mode: "insensitive" };
+        phone?: { contains: string; mode: "insensitive" };
+      }[];
+      isActive?: boolean;
+      isApproved?: boolean;
+    } = {};
 
     if (search) {
       where.OR = [

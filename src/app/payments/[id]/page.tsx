@@ -5,8 +5,6 @@ import { useRouter } from "next/navigation";
 import {
   ArrowLeftIcon,
   CreditCardIcon,
-  CheckCircleIcon,
-  XCircleIcon,
   ArrowPathIcon,
 } from "@heroicons/react/24/outline";
 
@@ -114,11 +112,6 @@ export default function PaymentDetailPage({
 
     fetchPayment();
   }, [params.id]);
-
-  // Format date for display
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
 
   // Format datetime for display
   const formatDateTime = (dateString: string) => {

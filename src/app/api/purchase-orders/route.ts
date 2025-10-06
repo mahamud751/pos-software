@@ -12,7 +12,10 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     // Build where clause
-    const where: any = {};
+    const where: {
+      status?: string;
+      supplierId?: number;
+    } = {};
 
     if (status) {
       where.status = status;
@@ -96,12 +99,19 @@ export async function POST(request: NextRequest) {
         notes: body.notes,
         expectedDate: body.expectedDate ? new Date(body.expectedDate) : null,
         purchaseOrderItems: {
-          create: body.items.map((item: any) => ({
-            productId: item.productId,
-            quantity: parseInt(item.quantity),
-            unitPrice: parseFloat(item.unitPrice),
-            totalPrice: parseFloat(item.totalPrice),
-          })),
+          create: body.items.map(
+            (item: {
+              productId: number;
+              quantity: string;
+              unitPrice: string;
+              totalPrice: string;
+            }) => ({
+              productId: item.productId,
+              quantity: parseInt(item.quantity),
+              unitPrice: parseFloat(item.unitPrice),
+              totalPrice: parseFloat(item.totalPrice),
+            })
+          ),
         },
       },
       include: {

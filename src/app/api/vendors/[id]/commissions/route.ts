@@ -5,9 +5,10 @@ import { verifyToken, getTokenFromRequest } from "@/lib/auth";
 // GET /api/vendors/[id]/commissions - Get all commissions for a vendor
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const token = getTokenFromRequest(request);
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -23,7 +24,10 @@ export async function GET(
     const limit = parseInt(searchParams.get("limit") || "10");
     const status = searchParams.get("status") || "";
 
-    const where: any = {
+    const where: {
+      vendorId: number;
+      status?: string;
+    } = {
       vendorId: parseInt(params.id),
     };
 
@@ -64,9 +68,10 @@ export async function GET(
 // POST /api/vendors/[id]/commissions - Pay a commission to a vendor
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const token = getTokenFromRequest(request);
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

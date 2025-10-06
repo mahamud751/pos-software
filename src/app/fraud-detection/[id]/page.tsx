@@ -1,15 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeftIcon,
   ExclamationTriangleIcon,
-  CheckCircleIcon,
-  XCircleIcon,
-  UserIcon,
-  CalendarIcon,
 } from "@heroicons/react/24/outline";
 
 interface FraudDetection {

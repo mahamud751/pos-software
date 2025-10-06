@@ -4,9 +4,10 @@ import prisma from "@/lib/prisma";
 // GET /api/warehouses/[id]/stock - Get stock levels for a warehouse
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const warehouseId = parseInt(params.id);
 
     if (isNaN(warehouseId)) {
@@ -23,7 +24,10 @@ export async function GET(
     const skip = (page - 1) * limit;
 
     // Build where clause
-    const where: any = {
+    const where: {
+      warehouseId: number;
+      product?: { name?: { contains: string; mode: "insensitive" } };
+    } = {
       warehouseId: warehouseId,
     };
 
@@ -81,9 +85,10 @@ export async function GET(
 // POST /api/warehouses/[id]/stock - Add or update stock for a product in warehouse
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const warehouseId = parseInt(params.id);
 
     if (isNaN(warehouseId)) {

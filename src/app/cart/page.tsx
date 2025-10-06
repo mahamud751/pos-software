@@ -3,12 +3,10 @@
 import React from "react";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import { TrashIcon, PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
 
 export default function ShoppingCartPage() {
-  const { cart, removeFromCart, updateQuantity, getTotalItems, getTotalPrice } =
-    useCart();
+  const { cart, removeFromCart, updateQuantity, getTotalPrice } = useCart();
   const router = useRouter();
 
   const handleCheckout = () => {

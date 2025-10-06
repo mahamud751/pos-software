@@ -1,13 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import {
   MagnifyingGlassIcon,
   CreditCardIcon,
-  ArrowPathIcon,
-  CheckCircleIcon,
-  XCircleIcon,
 } from "@heroicons/react/24/outline";
 
 interface Payment {

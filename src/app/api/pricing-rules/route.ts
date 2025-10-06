@@ -12,7 +12,10 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     // Build where clause
-    const where: any = {};
+    const where: {
+      name?: { contains: string; mode: "insensitive" };
+      isActive?: boolean;
+    } = {};
 
     if (search) {
       where.name = {

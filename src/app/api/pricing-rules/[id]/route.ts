@@ -4,9 +4,10 @@ import prisma from "@/lib/prisma";
 // GET /api/pricing-rules/[id] - Get a specific pricing rule
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const pricingRule = await prisma.pricingRule.findUnique({
       where: { id: parseInt(params.id) },
       include: {
@@ -48,9 +49,10 @@ export async function GET(
 // PUT /api/pricing-rules/[id] - Update a pricing rule
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const body = await request.json();
 
     // Check if pricing rule exists
@@ -93,9 +95,10 @@ export async function PUT(
 // DELETE /api/pricing-rules/[id] - Delete a pricing rule
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     // Check if pricing rule exists
     const existingPricingRule = await prisma.pricingRule.findUnique({
       where: { id: parseInt(params.id) },

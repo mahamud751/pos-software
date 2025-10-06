@@ -4,9 +4,10 @@ import prisma from "@/lib/prisma";
 // GET /api/fraud-detection/[id] - Get a specific fraud detection record
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const fraudDetection = await prisma.fraudDetection.findUnique({
       where: { id: parseInt(params.id) },
       include: {
@@ -49,9 +50,10 @@ export async function GET(
 // PUT /api/fraud-detection/[id] - Update a fraud detection record
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const body = await request.json();
 
     // Check if fraud detection exists
@@ -91,9 +93,10 @@ export async function PUT(
 // DELETE /api/fraud-detection/[id] - Delete a fraud detection record
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     // Check if fraud detection exists
     const existingFraudDetection = await prisma.fraudDetection.findUnique({
       where: { id: parseInt(params.id) },

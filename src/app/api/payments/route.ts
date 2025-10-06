@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  createPaymentIntent,
-  confirmPayment,
-  refundPayment,
-  savePaymentToDatabase,
-} from "@/lib/stripe/paymentService";
+import { createPaymentIntent } from "@/lib/stripe/paymentService";
 
 // POST /api/payments/create-payment-intent - Create a payment intent
 export async function POST(request: NextRequest) {

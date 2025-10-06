@@ -4,9 +4,10 @@ import prisma from "@/lib/prisma";
 // PUT /api/units/[id] - Update a unit
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const unitId = parseInt(params.id);
 
     if (isNaN(unitId)) {
@@ -83,9 +84,10 @@ export async function PUT(
 // DELETE /api/units/[id] - Delete a unit
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const unitId = parseInt(params.id);
 
     if (isNaN(unitId)) {

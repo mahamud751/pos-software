@@ -4,9 +4,10 @@ import prisma from "@/lib/prisma";
 // GET /api/campaigns/[id] - Get a specific campaign
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const campaign = await prisma.campaign.findUnique({
       where: { id: parseInt(params.id) },
       include: {
@@ -34,9 +35,10 @@ export async function GET(
 // PUT /api/campaigns/[id] - Update a campaign
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const body = await request.json();
 
     // Check if campaign exists
@@ -78,9 +80,10 @@ export async function PUT(
 // DELETE /api/campaigns/[id] - Delete a campaign
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     // Check if campaign exists
     const existingCampaign = await prisma.campaign.findUnique({
       where: { id: parseInt(params.id) },

@@ -12,7 +12,16 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     // Build where clause
-    const where: any = {};
+    const where: {
+      OR?: {
+        trackingNumber?: { contains: string; mode: "insensitive" };
+        carrier?: { contains: string; mode: "insensitive" };
+        sale?: {
+          customer?: { name?: { contains: string; mode: "insensitive" } };
+        };
+      }[];
+      status?: string;
+    } = {};
 
     if (search) {
       where.OR = [
