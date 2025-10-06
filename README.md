@@ -163,6 +163,31 @@ prisma/
 6. Click "Deploy" and wait for the build to complete
 7. Your application will be available at the provided Vercel URL
 
+## Troubleshooting Common Issues
+
+### "Unexpected token '<'" Errors
+
+If you see "Uncaught SyntaxError: Unexpected token '<'" errors in the browser console, this typically means:
+
+1. **Static assets are not being served correctly** - The server is returning HTML (often a 404 page) instead of JavaScript files
+2. **Incorrect base path configuration** - If deploying to a subdirectory, you may need to configure `basePath` in next.config.js
+3. **Routing issues** - Incorrect routing configuration in vercel.json
+
+**Solutions:**
+
+1. Ensure your vercel.json routing is configured correctly
+2. Check that all environment variables are properly set in Vercel
+3. Verify your database connection is working
+4. Make sure you've run database migrations after deployment
+
+### Database Connection Issues
+
+If you're having trouble connecting to your database:
+
+1. Verify your DATABASE_URL is correct
+2. Ensure your database allows connections from Vercel's IP addresses
+3. Check that you've run `npx prisma migrate deploy` after deployment
+
 ## Pending Features
 
 ### Multi-Vendor Support
